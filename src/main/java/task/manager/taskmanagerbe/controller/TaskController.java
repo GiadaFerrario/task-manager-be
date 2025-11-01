@@ -3,7 +3,7 @@ package task.manager.taskmanagerbe.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import task.manager.taskmanagerbe.model.Task;
+import task.manager.taskmanagerbe.dto.TaskDTO;
 import task.manager.taskmanagerbe.service.TaskService;
 
 import java.util.List;
@@ -19,13 +19,13 @@ public class TaskController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Task>> getAll() {
+    public ResponseEntity<List<TaskDTO>> getAll() {
         return ResponseEntity.ok(taskService.getAll());
     }
 
     @PostMapping
-    public ResponseEntity<Task> create(@RequestBody Task task) {
-        Task saved = taskService.create(task);
+    public ResponseEntity<TaskDTO> create(@RequestBody TaskDTO task) {
+        TaskDTO saved = taskService.create(task);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 }

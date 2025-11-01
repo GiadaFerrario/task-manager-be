@@ -3,6 +3,7 @@ package task.manager.taskmanagerbe.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import task.manager.taskmanagerbe.dto.CategoryDTO;
 import task.manager.taskmanagerbe.model.Category;
 import task.manager.taskmanagerbe.service.CategoryService;
 
@@ -19,13 +20,13 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Category>> getAll() {
+    public ResponseEntity<List<CategoryDTO>> getAll() {
         return ResponseEntity.ok(categoryService.getAll());
     }
 
     @PostMapping
-    public ResponseEntity<Category> create(@RequestBody Category category) {
-        Category saved = categoryService.create(category);
+    public ResponseEntity<CategoryDTO> create(@RequestBody CategoryDTO category) {
+        CategoryDTO saved = categoryService.create(category);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
