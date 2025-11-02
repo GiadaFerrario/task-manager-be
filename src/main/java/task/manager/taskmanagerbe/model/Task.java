@@ -1,5 +1,6 @@
 package task.manager.taskmanagerbe.model;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,12 +20,14 @@ public class Task {
     private String description;
 
     @Enumerated(EnumType.STRING)
+    @Nullable
     private Priority priority;
 
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @ManyToOne(fetch = FetchType.LAZY) // more tasks can have the same category but a task can have only one category
+    @ManyToOne(fetch = FetchType.LAZY) // more tasks can have the same category but a task can have only one or zero category
     @JoinColumn(name = "category_id")
+    @Nullable
     private Category category;
 }
