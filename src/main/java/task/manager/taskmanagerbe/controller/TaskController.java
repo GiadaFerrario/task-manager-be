@@ -1,5 +1,6 @@
 package task.manager.taskmanagerbe.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,7 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<TaskDTO> create(@RequestBody TaskDTO task) {
+    public ResponseEntity<TaskDTO> create(@Valid @RequestBody TaskDTO task) {
         TaskDTO saved = taskService.create(task);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
@@ -39,11 +40,11 @@ public class TaskController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         taskService.delete(id);
-        return ResponseEntity.noContent().build(); // 204
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TaskDTO> update(@PathVariable Long id, @RequestBody TaskDTO dto) {
+    public ResponseEntity<TaskDTO> update(@PathVariable Long id, @Valid @RequestBody TaskDTO dto) {
         return ResponseEntity.ok(taskService.update(id, dto));
     }
 

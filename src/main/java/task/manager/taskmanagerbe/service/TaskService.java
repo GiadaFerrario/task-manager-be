@@ -3,6 +3,8 @@ package task.manager.taskmanagerbe.service;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import task.manager.taskmanagerbe.dto.TaskDTO;
+import task.manager.taskmanagerbe.exception.BadRequestException;
+import task.manager.taskmanagerbe.exception.ResourceNotFoundException;
 import task.manager.taskmanagerbe.model.Category;
 import task.manager.taskmanagerbe.model.Priority;
 import task.manager.taskmanagerbe.model.Status;
@@ -33,10 +35,13 @@ public class TaskService {
     public TaskDTO getById(Long id) {
         return taskRepository.findById(id)
                 .map(this::toDTO)
-                .orElseThrow(() -> new RuntimeException("Task not found with id: " + id)); // TODO: improve with ad-hoc exception
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
     }
 
     public TaskDTO create(TaskDTO dto) {
+        if (dto.title() == null || dto.title().isBlank()) {
+            throw new BadRequestException("Title is mandatory - cannot be empty");
+        }
         Task task = new Task();
         task.setTitle(dto.title());
         task.setDescription(dto.description());
@@ -51,7 +56,7 @@ public class TaskService {
     @Transactional
     public TaskDTO update(Long id, TaskDTO dto) {
         Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Task not found with id: " + id)); // TODO: improve with ad-hoc exception
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
 
         task.setTitle(dto.title());
         task.setDescription(dto.description());
@@ -64,14 +69,14 @@ public class TaskService {
 
     public void delete(Long id) {
         if (!taskRepository.existsById(id))
-            throw new RuntimeException("Task not found with id: " + id); // TODO: improve with ad-hoc exception
+            throw new ResourceNotFoundException("Task not found with id: " + id);
         taskRepository.deleteById(id);
     }
 
     @Transactional
     public TaskDTO changeStatus(Long id, Status status) {
         Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Task not found with id: " + id)); // TODO: improve with ad-hoc exception
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
 
         task.setStatus(status);
         return toDTO(task);
@@ -80,7 +85,7 @@ public class TaskService {
     @Transactional
     public TaskDTO changePriority(Long id, Priority priority) {
         Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Task not found with id: " + id)); // TODO: improve with ad-hoc exception
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
 
         task.setPriority(priority);
         return toDTO(task);
@@ -89,7 +94,7 @@ public class TaskService {
     @Transactional
     public TaskDTO changeCategory(Long id, Long categoryId) {
         Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Task not found with id: " + id)); // TODO: improve with ad-hoc exception
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
 
         task.setCategory(getCategoryOrNull(categoryId));
         return toDTO(task);
@@ -100,7 +105,7 @@ public class TaskService {
     private Category getCategoryOrNull(Long categoryId) {
         if (categoryId == null) return null;
         return categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + categoryId));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + categoryId));
     }
 
     private TaskDTO toDTO(Task task) {
