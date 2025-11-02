@@ -61,8 +61,6 @@ public class CategoryService {
         return toDTO(updated);
     }
 
-
-    /*** DELETE ***/
     public void delete(Long id) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found - id: " + id));
